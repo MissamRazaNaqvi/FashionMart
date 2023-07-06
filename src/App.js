@@ -8,20 +8,6 @@ import ProductDetail from './components/productDetail/productDetail';
 import Cart from './components/headers/cart';
 import Checkout from './components/checkout/checkout';
 
-// const router = createBrowserRouter([
-//   {
-//     path: "/",
-//     element: (<ProductListPage />),
-//   },
-//   {
-//     path: "/login",
-//     element: (<Login />),
-//   },
-//   {
-//     path: "/signup",
-//     element: (<Signup />)
-//   }
-// ]);
 function App() {
   return (
     <BrowserRouter  >
@@ -29,8 +15,9 @@ function App() {
       <Routes>
         <Route path="/" element={<ProductListPage />} />
         <Route path='/login' element={<Login />} />
-        <Route path='/productDetail' element={<ProductDetail />} />
+        <Route path='/productDetail/:id' element={<ProductDetail />} />
         <Route path='/cart' element={<Cart />} />
+        <Route path='/signup' element={<Signup />} />
         <Route path='/checkout' element={<Checkout />} />
       </Routes>
     </BrowserRouter>

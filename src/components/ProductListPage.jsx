@@ -1,23 +1,15 @@
 import { Dialog, Disclosure, Menu, Transition } from '@headlessui/react'
 import React, { Fragment, useEffect, useState } from 'react'
-import { ChevronLeftIcon, ChevronRightIcon, StarIcon, XMarkIcon } from '@heroicons/react/24/outline'
+import { ChevronLeftIcon, ChevronRightIcon, XMarkIcon } from '@heroicons/react/24/outline'
 import { ChevronDownIcon, FunnelIcon, MinusIcon, PlusIcon, Squares2X2Icon } from '@heroicons/react/20/solid'
 import { Link } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import { getProducts } from '../store/actions/productAction'
+import { handleSortChange } from '../store/slices/slice'
 const sortOptions = [
-    { name: 'Most Popular', href: '#', current: true },
-    { name: 'Best Rating', href: '#', current: false },
-    { name: 'Newest', href: '#', current: false },
-    { name: 'Price: Low to High', href: '#', current: false },
-    { name: 'Price: High to Low', href: '#', current: false },
-]
-const subCategories = [
-    { name: 'Totes', href: '#' },
-    { name: 'Backpacks', href: '#' },
-    { name: 'Travel Bags', href: '#' },
-    { name: 'Hip Bags', href: '#' },
-    { name: 'Laptop Sleeves', href: '#' },
+    { name: 'BestRating', href: '#', current: false },
+    { name: 'LowToHigh', href: '#', current: false },
+    { name: 'HighToLow', href: '#', current: false },
 ]
 const filters = [
     {
@@ -56,50 +48,21 @@ const filters = [
         ],
     },
 ]
-const products = [
-    {
-        id: 1,
-        name: 'Basic Tee',
-        href: '/productDetail',
-        thumbnail: 'https://tailwindui.com/img/ecommerce-images/product-page-01-related-product-01.jpg',
-        imageAlt: "Front of men's Basic Tee in black.",
-        price: '$35',
-        color: 'Black',
-    }, {
-        id: 1,
-        name: 'Basic Tee',
-        href: '/productDetail',
-        thumbnail: 'https://tailwindui.com/img/ecommerce-images/product-page-01-related-product-01.jpg',
-        imageAlt: "Front of men's Basic Tee in black.",
-        price: '$35',
-        color: 'Black',
-    }, {
-        id: 1,
-        name: 'Basic Tee',
-        href: '/productDetail',
-        thumbnail: 'https://tailwindui.com/img/ecommerce-images/product-page-01-related-product-01.jpg',
-        imageAlt: "Front of men's Basic Tee in black.",
-        price: '$35',
-        color: 'Black',
-    }, {
-        id: 1,
-        name: 'Basic Tee',
-        href: 'productDetail',
-        thumbnail: 'https://tailwindui.com/img/ecommerce-images/product-page-01-related-product-01.jpg',
-        imageAlt: "Front of men's Basic Tee in black.",
-        price: '$35',
-        color: 'Black',
-    },
-
-]
 function classNames(...classes) {
     return classes.filter(Boolean).join(' ')
 }
-
 export default function ProductListPage() {
-    const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false)
     const dispatch = useDispatch()
+    const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false)
     const product = useSelector((state) => state.productReducer.product)
+    function handleSort(name) {
+        dispatch(handleSortChange(name))
+    }
+    function handleFilter(e) {
+        let isChecked = e.target.value;
+        console.log(isChecked)
+    }
+    const filteredBrand = [...new Set(product && product.map((item) => { return item.brand }))];
     useEffect(() => {
         dispatch(getProducts())
     }, []);
@@ -149,11 +112,11 @@ export default function ProductListPage() {
                                         <form className="mt-4 border-t border-gray-200">
                                             <h3 className="sr-only">Categories</h3>
                                             <ul role="list" className="px-2 py-3 font-medium text-gray-900">
-                                                {subCategories.map((category) => (
-                                                    <li key={category.name}>
-                                                        <a href={category.href} className="block px-2 py-3">
-                                                            {category.name}
-                                                        </a>
+                                                {filteredBrand.map((brandName, index) => (
+                                                    <li key={index}>
+                                                        <label className="block px-2 py-3">
+                                                            {brandName}
+                                                        </label>
                                                     </li>
                                                 ))}
                                             </ul>
@@ -222,7 +185,6 @@ export default function ProductListPage() {
                                             />
                                         </Menu.Button>
                                     </div>
-
                                     <Transition
                                         as={Fragment}
                                         enter="transition ease-out duration-100"
@@ -237,16 +199,12 @@ export default function ProductListPage() {
                                                 {sortOptions.map((option) => (
                                                     <Menu.Item key={option.name}>
                                                         {({ active }) => (
-                                                            <a
-                                                                href={option.href}
-                                                                className={classNames(
-                                                                    option.current ? 'font-medium text-gray-900' : 'text-gray-500',
-                                                                    active ? 'bg-gray-100' : '',
-                                                                    'block px-4 py-2 text-sm'
-                                                                )}
-                                                            >
+                                                            <span onClick={() => { handleSort(option.name) }} className={classNames(
+                                                                option.current ? 'font-medium text-gray-900' : 'text-gray-500',
+                                                                active ? 'bg-gray-100' : '',
+                                                                'block px-4 py-2 text-sm')}>
                                                                 {option.name}
-                                                            </a>
+                                                            </span>
                                                         )}
                                                     </Menu.Item>
                                                 ))}
@@ -254,7 +212,6 @@ export default function ProductListPage() {
                                         </Menu.Items>
                                     </Transition>
                                 </Menu>
-
                                 <button type="button" className="-m-2 ml-5 p-2 text-gray-400 hover:text-gray-500 sm:ml-7">
                                     <span className="sr-only">View grid</span>
                                     <Squares2X2Icon className="h-5 w-5" aria-hidden="true" />
@@ -269,24 +226,24 @@ export default function ProductListPage() {
                                 </button>
                             </div>
                         </div>
-
                         <section aria-labelledby="products-heading" className="pb-24 pt-6">
                             <h2 id="products-heading" className="sr-only">
                                 Products
                             </h2>
-
                             <div className="grid grid-cols-1 gap-x-8 gap-y-10 lg:grid-cols-4">
                                 {/* Filters */}
                                 <form className="hidden lg:block">
                                     <h3 className="sr-only">Categories</h3>
                                     <ul role="list" className="space-y-4 border-b border-gray-200 pb-6 text-sm font-medium text-gray-900">
-                                        {subCategories.map((category) => (
-                                            <li key={category.name}>
-                                                <a href={category.href}>{category.name}</a>
+                                        {filteredBrand.map((brandName, index) => (
+                                            <li key={index}>
+                                                <label>
+                                                    <input type='checkbox' className='mx-2' value={brandName} onChange={(e) => { handleFilter(e) }} />
+                                                    {brandName}
+                                                </label>
                                             </li>
                                         ))}
                                     </ul>
-
                                     {filters.map((section) => (
                                         <Disclosure as="div" key={section.id} className="border-b border-gray-200 py-6">
                                             {({ open }) => (
@@ -335,7 +292,7 @@ export default function ProductListPage() {
                                 <div className="lg:col-span-3"><div className="bg-white">
                                     <div className="mx-auto max-w-2xl px-4 py-8 sm:px-6 sm:py-0 lg:max-w-7xl lg:px-8">
                                         <div className="mt-0 grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-4 xl:gap-x-8">
-                                            {product.products && product.products.map((product) => (
+                                            {product && product.map((product) => (
                                                 <div key={product.id} className="group relative">
                                                     <div className="aspect-h-1 aspect-w-1 w-full overflow-hidden rounded-md bg-gray-200 lg:aspect-none group-hover:opacity-75 lg:h-60">
                                                         <img
@@ -347,7 +304,7 @@ export default function ProductListPage() {
                                                     <div className="mt-4 flex justify-between">
                                                         <div>
                                                             <h3 className="text-sm text-gray-700">
-                                                                <Link to='/productDetail'>
+                                                                <Link to={`/productDetail/${product.id}`}>
                                                                     <span aria-hidden="true" className="absolute inset-0" />
                                                                     {product.title}
                                                                 </Link>
@@ -457,6 +414,6 @@ export default function ProductListPage() {
                 </div>
             </div>
 
-        </div>
+        </div >
     )
 }

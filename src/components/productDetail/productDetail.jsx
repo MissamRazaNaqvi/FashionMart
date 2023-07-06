@@ -1,15 +1,15 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { StarIcon } from '@heroicons/react/20/solid'
 import { RadioGroup } from '@headlessui/react'
+import { useParams } from 'react-router'
+
+import axios from 'axios'
+import { Carousel } from 'react-carousel-minimal'
 
 const product = {
     name: 'Basic Tee 6-Pack',
     price: '$192',
     href: '#',
-    breadcrumbs: [
-        { id: 1, name: 'Men', href: '#' },
-        { id: 2, name: 'Clothing', href: '#' },
-    ],
     images: [
         {
             src: 'https://tailwindui.com/img/ecommerce-images/product-page-02-secondary-product-shot.jpg',
@@ -61,42 +61,119 @@ function classNames(...classes) {
 }
 
 export default function ProductDetail() {
+    // const data = [
+    //     {
+    //         image: "https://upload.wikimedia.org/wikipedia/commons/thumb/0/0c/GoldenGateBridge-001.jpg/1200px-GoldenGateBridge-001.jpg",
+    //         caption: "San Francisco"
+    //     },
+    //     {
+    //         image: "https://cdn.britannica.com/s:800x450,c:crop/35/204435-138-2F2B745A/Time-lapse-hyper-lapse-Isle-Skye-Scotland.jpg",
+    //         caption: "Scotland"
+    //     },
+    //     {
+    //         image: "https://static2.tripoto.com/media/filter/tst/img/735873/TripDocument/1537686560_1537686557954.jpg",
+    //         caption: "Darjeeling"
+    //     },
+    //     {
+    //         image: "https://upload.wikimedia.org/wikipedia/commons/thumb/1/16/Palace_of_Fine_Arts_%2816794p%29.jpg/1200px-Palace_of_Fine_Arts_%2816794p%29.jpg",
+    //         caption: "San Francisco"
+    //     },
+    //     {
+    //         image: "https://i.natgeofe.com/n/f7732389-a045-402c-bf39-cb4eda39e786/scotland_travel_4x3.jpg",
+    //         caption: "Scotland"
+    //     },
+    //     {
+    //         image: "https://www.tusktravel.com/blog/wp-content/uploads/2020/07/Best-Time-to-Visit-Darjeeling-for-Honeymoon.jpg",
+    //         caption: "Darjeeling"
+    //     },
+    //     {
+    //         image: "https://www.omm.com/~/media/images/site/locations/san_francisco_780x520px.ashx",
+    //         caption: "San Francisco"
+    //     },
+    //     {
+    //         image: "https://images.ctfassets.net/bth3mlrehms2/6Ypj2Qd3m3jQk6ygmpsNAM/61d2f8cb9f939beed918971b9bc59bcd/Scotland.jpg?w=750&h=422&fl=progressive&q=50&fm=jpg",
+    //         caption: "Scotland"
+    //     },
+    //     {
+    //         image: "https://www.oyorooms.com/travel-guide/wp-content/uploads/2019/02/summer-7.jpg",
+    //         caption: "Darjeeling"
+    //     }
+    // ];
+
+    // const captionStyle = {
+    //     fontSize: '2em',
+    //     fontWeight: 'bold',
+    // }
+    // const slideNumberStyle = {
+    //     fontSize: '20px',
+    //     fontWeight: 'bold',
+    // }
+    const { id } = useParams()
     const [selectedColor, setSelectedColor] = useState(product.colors[0])
     const [selectedSize, setSelectedSize] = useState(product.sizes[2])
+    const [detail, setProduct] = useState([]);
+    let productImg = detail.images
+    console.log('product image ', productImg)
+    async function getProductByid() {
+        let { data } = await axios.get(`${process.env.REACT_APP_API_BASEURL}/${id}`)
+        setProduct(data)
+    }
 
+    // console.log(detail.images)
+
+    useEffect(() => {
+        if (id) {
+            getProductByid()
+        }
+    }, []);
     return (
         <div className="bg-white">
             <div className="pt-6">
-                <nav aria-label="Breadcrumb">
+                {/* <nav aria-label="Breadcrumb">
                     <ol role="list" className="mx-auto flex max-w-2xl items-center space-x-2 px-4 sm:px-6 lg:max-w-7xl lg:px-8">
-                        {product.breadcrumbs.map((breadcrumb) => (
-                            <li key={breadcrumb.id}>
-                                <div className="flex items-center">
-                                    <a href={breadcrumb.href} className="mr-2 text-sm font-medium text-gray-900">
-                                        {breadcrumb.name}
-                                    </a>
-                                    <svg
-                                        width={16}
-                                        height={20}
-                                        viewBox="0 0 16 20"
-                                        fill="currentColor"
-                                        aria-hidden="true"
-                                        className="h-5 w-4 text-gray-300"
-                                    >
-                                        <path d="M5.697 4.34L8.98 16.532h1.327L7.025 4.341H5.697z" />
-                                    </svg>
-                                </div>
-                            </li>
-                        ))}
                         <li className="text-sm">
                             <a href={product.href} aria-current="page" className="font-medium text-gray-500 hover:text-gray-600">
                                 {product.name}
                             </a>
                         </li>
                     </ol>
-                </nav>
+                </nav> */}
 
                 {/* Image gallery */}
+
+                {/* <Carousel
+                    data={data}
+                    time={2000}
+                    width="850px"
+                    height="500px"
+                    captionStyle={captionStyle}
+                    radius="10px"
+                    slideNumber={true}
+                    slideNumberStyle={slideNumberStyle}
+                    captionPosition="bottom"
+                    automatic={true}
+                    dots={true}
+                    pauseIconColor="white"
+                    pauseIconSize="40px"
+                    slideBackgroundColor="darkgrey"
+                    slideImageFit="cover"
+                    thumbnails={true}
+                    thumbnailWidth="100px"
+                    style={{
+                        textAlign: "center",
+                        maxWidth: "850px",
+                        maxHeight: "500px",
+                        margin: "40px auto",
+                    }}
+                /> */}
+                <div >
+
+                    {/* {
+                        detail.images && detail.images.map((item) => {
+                            return (<img src={item} alt='product page' className='' />)
+                        })
+                    } */}
+                </div>
                 <div className="mx-auto mt-6 max-w-2xl sm:px-6 lg:grid lg:max-w-7xl lg:grid-cols-3 lg:gap-x-8 lg:px-8">
                     <div className="aspect-h-4 aspect-w-3 hidden overflow-hidden rounded-lg lg:block">
                         <img
