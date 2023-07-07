@@ -4,7 +4,7 @@ import { ChevronLeftIcon, ChevronRightIcon, XMarkIcon } from '@heroicons/react/2
 import { ChevronDownIcon, FunnelIcon, MinusIcon, PlusIcon, Squares2X2Icon } from '@heroicons/react/20/solid'
 import { Link } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
-import { getProducts } from '../store/actions/productAction'
+import { getCategory, getProducts } from '../store/actions/productAction'
 import { handleSortChange } from '../store/slices/slice'
 const sortOptions = [
     { name: 'BestRating', href: '#', current: false },
@@ -54,18 +54,23 @@ function classNames(...classes) {
 export default function ProductListPage() {
     const dispatch = useDispatch()
     const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false)
-    const product = useSelector((state) => state.productReducer.product)
-    function handleSort(name) {
-        dispatch(handleSortChange(name))
-    }
+    let { sorteditem, categories } = useSelector((state) => state.productReducer)
+    let filter = []
     function handleFilter(e) {
-        let isChecked = e.target.value;
-        console.log(isChecked)
+        if (e.target.checked) {
+            filter.push(e.target.value)
+        }
+        else {
+            const index = filter.findIndex(el => el === e.target.value)
+            filter.splice(index, 1)
+        }
+        console.log(filter)
     }
-    const filteredBrand = [...new Set(product && product.map((item) => { return item.brand }))];
+    // const filteredBrand = [...new Set(sorteditem && sorteditem.map((item) => { return item.brand }))];
     useEffect(() => {
         dispatch(getProducts())
-    }, []);
+        dispatch(getCategory())
+    }, [dispatch]);
     return (
         <div>
             <div className="bg-white">
@@ -112,7 +117,7 @@ export default function ProductListPage() {
                                         <form className="mt-4 border-t border-gray-200">
                                             <h3 className="sr-only">Categories</h3>
                                             <ul role="list" className="px-2 py-3 font-medium text-gray-900">
-                                                {filteredBrand.map((brandName, index) => (
+                                                {categories.map((brandName, index) => (
                                                     <li key={index}>
                                                         <label className="block px-2 py-3">
                                                             {brandName}
@@ -199,7 +204,7 @@ export default function ProductListPage() {
                                                 {sortOptions.map((option) => (
                                                     <Menu.Item key={option.name}>
                                                         {({ active }) => (
-                                                            <span onClick={() => { handleSort(option.name) }} className={classNames(
+                                                            <span onClick={() => { dispatch(handleSortChange(option.name)) }} className={classNames(
                                                                 option.current ? 'font-medium text-gray-900' : 'text-gray-500',
                                                                 active ? 'bg-gray-100' : '',
                                                                 'block px-4 py-2 text-sm')}>
@@ -235,7 +240,7 @@ export default function ProductListPage() {
                                 <form className="hidden lg:block">
                                     <h3 className="sr-only">Categories</h3>
                                     <ul role="list" className="space-y-4 border-b border-gray-200 pb-6 text-sm font-medium text-gray-900">
-                                        {filteredBrand.map((brandName, index) => (
+                                        {categories.map((brandName, index) => (
                                             <li key={index}>
                                                 <label>
                                                     <input type='checkbox' className='mx-2' value={brandName} onChange={(e) => { handleFilter(e) }} />
@@ -292,7 +297,7 @@ export default function ProductListPage() {
                                 <div className="lg:col-span-3"><div className="bg-white">
                                     <div className="mx-auto max-w-2xl px-4 py-8 sm:px-6 sm:py-0 lg:max-w-7xl lg:px-8">
                                         <div className="mt-0 grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-4 xl:gap-x-8">
-                                            {product && product.map((product) => (
+                                            {sorteditem && sorteditem.map((product) => (
                                                 <div key={product.id} className="group relative">
                                                     <div className="aspect-h-1 aspect-w-1 w-full overflow-hidden rounded-md bg-gray-200 lg:aspect-none group-hover:opacity-75 lg:h-60">
                                                         <img

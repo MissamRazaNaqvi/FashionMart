@@ -1,6 +1,16 @@
-import { Link } from "react-router-dom";
+import { useForm } from "react-hook-form";
+import { Link, useNavigate } from "react-router-dom";
+import { createUser } from "../../store/actions/productAction";
+import { useDispatch } from "react-redux";
 
 export default function Signup() {
+    const dispatch = useDispatch()
+    const navigate = useNavigate();
+    const { register, handleSubmit, errors } = useForm()
+    const onSubmit = (data) => {
+        dispatch(createUser(data))
+        navigate('/login')
+    }
     return (
         <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">
             <div className="sm:mx-auto sm:w-full sm:max-w-sm">
@@ -10,11 +20,11 @@ export default function Signup() {
                     alt="Your Company"
                 />
                 <h2 className="mt-10 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">
-                    Sign in to your account
+                    Create your account
                 </h2>
             </div>
             <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
-                <form className="space-y-6" action="#" method="POST">
+                <form onSubmit={handleSubmit(onSubmit)} className="space-y-6" action="#" method="POST">
                     <div>
                         <label htmlFor="email" className="block text-sm font-medium leading-6 text-gray-900">
                             Email address
@@ -24,7 +34,7 @@ export default function Signup() {
                                 id="email"
                                 name="email"
                                 type="email"
-                                autoComplete="email"
+                                {...register("email", { required: true }, { pattern: /(.+)@(.+){2,}\.(.+){2,}/ })}
                                 required
                                 className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                             />
@@ -42,10 +52,10 @@ export default function Signup() {
                                 id="password"
                                 name="password"
                                 type="password"
-                                autoComplete="current-password"
-                                required
+                                {...register("password", { required: true })}
                                 className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                             />
+                            <p className="text-red-500">{errors && errors.message}</p>
                         </div>
                     </div>
                     <div>
@@ -53,13 +63,13 @@ export default function Signup() {
                             <label htmlFor="password" className="block text-sm font-medium leading-6 text-gray-900">
                                 Confirm Password
                             </label>
-
                         </div>
                         <div className="mt-2">
                             <input
                                 id="confirmPassword"
                                 name="confirmPassword"
                                 type="password"
+                                {...register("confirmPassword", { required: true })}
                                 required
                                 className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                             />
