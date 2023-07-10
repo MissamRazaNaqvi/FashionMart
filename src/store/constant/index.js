@@ -5,7 +5,8 @@ const URL = `${process.env.REACT_APP_API_BASEURL}`
 const productApi = {
     getProducts: `${URL}/products`,
     getCategory: `${URL}/categories`,
-    createUser: `${URL}/user`
+    createUser: `${URL}/user`,
+    cartItemPath: `${URL}/cartItem`
 };
 export const path = {
     root: "/",

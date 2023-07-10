@@ -3,13 +3,20 @@ import { getUserData } from "../actions/productAction";
 
 const initialState = {
     user: [],
+    isLogin: false,
     loading: false,
     error: null
 }
 const userSlice = createSlice({
     name: 'user',
     initialState,
-    reducers: {},
+    reducers: {
+        handleLogin: (state, action) => {
+            if (action.payload) {
+                state.isLogin = action.payload
+            }
+        }
+    },
     extraReducers: (builder) => {
         builder
             .addCase(getUserData.pending, (state, action) => {
@@ -26,3 +33,4 @@ const userSlice = createSlice({
     }
 })
 export default userSlice.reducer
+export const { handleLogin } = userSlice.actions

@@ -115,7 +115,22 @@ export default function ProductDetail() {
         let { data } = await axios.get(`${process.env.REACT_APP_API_BASEURL}/products/${id}`)
         setProduct(data)
     }
-    console.log(detail.images)
+    async function addToCart() {
+        await axios.post(`${process.env.REACT_APP_API_BASEURL}/cartItem`, {
+            "id": detail.id,
+            "price": detail.price,
+            "rating": detail.rating,
+            "title": detail.title,
+            "description": detail.description,
+            "discountPercentage": detail.discountPercentage,
+            "stock": detail.stock,
+            "brand": detail.brand,
+            "category": detail.category,
+            "thumbnail": detail.thumbnail,
+            "images": [detail.images]
+        })
+    }
+    // console.log(detail.images)
     useEffect(() => {
         if (id) {
             getProductByid()
@@ -329,11 +344,11 @@ export default function ProductDetail() {
                                 </RadioGroup>
                             </div>
 
-                            <button
+                            <button onClick={() => { addToCart() }}
                                 type="submit"
                                 className="mt-10 flex w-full items-center justify-center rounded-md border border-transparent bg-indigo-600 px-8 py-3 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
                             >
-                                Add to bag
+                                Add to Cart
                             </button>
                         </form>
                     </div>
