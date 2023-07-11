@@ -12,6 +12,7 @@ import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { getCartItem } from './store/actions/cartItemActions';
 import PageNoteFound from './404 PageNotFound/PageNoteFound';
+import OrderSuccess from './components/order/orderSuccess';
 
 function App() {
   const dispatch = useDispatch()
@@ -27,6 +28,7 @@ function App() {
         <Route path='/login' element={<Login />} />
         <Route path='/productDetail/:id' element={<ProductDetail />} />
         <Route path='/signup' element={<Signup />} />
+        <Route path='/checkout/order' element={<OrderSuccess />}></Route>
         <Route path='/cart' element={
           // <Protected>
           //   <Cart />

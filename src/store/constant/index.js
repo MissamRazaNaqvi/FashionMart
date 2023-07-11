@@ -6,7 +6,8 @@ const productApi = {
     getProducts: `${URL}/products`,
     getCategory: `${URL}/categories`,
     createUser: `${URL}/user`,
-    cartItemPath: `${URL}/cartItem`
+    cartItemPath: `${URL}/cartItem`,
+    address: `${URL}/address`
 };
 export const path = {
     root: "/",
