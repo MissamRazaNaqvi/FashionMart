@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { StarIcon } from '@heroicons/react/20/solid'
 import { RadioGroup } from '@headlessui/react'
-import { useParams } from 'react-router'
+import { useNavigate, useParams } from 'react-router'
 
 import axios from 'axios'
 
@@ -108,6 +108,7 @@ export default function ProductDetail() {
     //     fontWeight: 'bold',
     // }
     const { id } = useParams()
+    const navigate = useNavigate()
     const [selectedColor, setSelectedColor] = useState(product.colors[0])
     const [selectedSize, setSelectedSize] = useState(product.sizes[2])
     const [detail, setProduct] = useState([]);

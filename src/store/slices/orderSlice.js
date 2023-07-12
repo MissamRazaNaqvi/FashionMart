@@ -4,13 +4,18 @@ import { addAddress, getAddressList } from "../actions/orderActions"
 const initialState = {
     address: [],
     addressList: [],
+    showForm: false,
     error: null,
     loading: false
 }
 const orderSlice = createSlice({
     name: 'order',
     initialState,
-    reducers: {},
+    reducers: {
+        handleShowForm: (state, action) => {
+            state.showForm = action.payload
+        }
+    },
     extraReducers: (builder) => {
         builder
             .addCase(addAddress.pending, (state, action) => {
@@ -38,3 +43,4 @@ const orderSlice = createSlice({
     }
 })
 export default orderSlice.reducer
+export const { handleShowForm } = orderSlice.actions

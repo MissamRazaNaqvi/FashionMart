@@ -1,75 +1,68 @@
 import axios from 'axios'
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { Link, Navigate } from 'react-router-dom'
-import { getCartItem } from '../../store/actions/cartItemActions'
+import { Link, Navigate, useNavigate } from 'react-router-dom'
+import { deleteProduct, getCartItem } from '../../store/actions/cartItemActions'
 import { useForm } from 'react-hook-form'
+import AddressForm from './AddressForm'
+import { handleShowForm } from '../../store/slices/orderSlice'
 import { getAddressList } from '../../store/actions/orderActions'
 
-const adddress = [
-    {
-        name: 'Leslie Alexander',
-        email: 'Royal Nawab Society juhapura ahm pincode 380055',
-        role: '9876543218',
-        imageUrl:
-            'https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
-        lastSeen: 'Delhi',
-        lastSeenDateTime: '2023-01-23T13:23Z',
-    },
-    {
-        name: 'Michael Foster',
-        email: 'al-burj society makarba ahm pincode 380055',
-        role: '987797895',
-        imageUrl:
-            'https://images.unsplash.com/photo-1519244703995-f4e0f30006d5?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
-        lastSeen: 'ahemdabad',
-        lastSeenDateTime: '2023-01-23T13:23Z',
-    },
+// const adddress = [
+//     {
+//         name: 'Leslie Alexander',
+//         email: 'Royal Nawab Society juhapura ahm pincode 380055',
+//         role: '9876543218',
+//         imageUrl:
+//             'https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
+//         lastSeen: 'Delhi',
+//         lastSeenDateTime: '2023-01-23T13:23Z',
+//     },
+//     {
+//         name: 'Michael Foster',
+//         email: 'al-burj society makarba ahm pincode 380055',
+//         role: '987797895',
+//         imageUrl:
+//             'https://images.unsplash.com/photo-1519244703995-f4e0f30006d5?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
+//         lastSeen: 'ahemdabad',
+//         lastSeenDateTime: '2023-01-23T13:23Z',
+//     },
 
-]
-export default function Checkout({ cartItem }) {
-
+// ]
+export default function Checkout() {
     let subtotal = 0
-    let regions = ["Abu Dhabi", "Dubai", "Sharjah", "Ajman", "Umm Al Quwain", "Ras Al Khaimah", "Fujairah"]
-    let states = ["Andhra Pradesh", "Arunachal Pradesh", "Assam", "Bihar", "Chhattisgarh", "Goa", "Gujarat",
-        "Haryana", "Himachal Pradesh", "Jharkhand", "Karnataka", "Kerala", "Madhya Pradesh", "Maharashtra",
-        "Manipur", "Meghalaya", "Mizoram", "Nagaland", "Odisha", "Punjab", "Rajasthan", "Sikkim", "Tamil Nadu",
-        "Telangana", "Tripura", "Uttar Pradesh", "Uttarakhand", "West Bengal"
-    ]
+    // let regions = ["Abu Dhabi", "Dubai", "Sharjah", "Ajman", "Umm Al Quwain", "Ras Al Khaimah", "Fujairah"]
+    // let states = ["Andhra Pradesh", "Arunachal Pradesh", "Assam", "Bihar", "Chhattisgarh", "Goa", "Gujarat",
+    //     "Haryana", "Himachal Pradesh", "Jharkhand", "Karnataka", "Kerala", "Madhya Pradesh", "Maharashtra",
+    //     "Manipur", "Meghalaya", "Mizoram", "Nagaland", "Odisha", "Punjab", "Rajasthan", "Sikkim", "Tamil Nadu",
+    //     "Telangana", "Tripura", "Uttar Pradesh", "Uttarakhand", "West Bengal"
+    // ]
+    let paymentMethod = ['UPI', 'COD', 'CREDIT/DEBIT CARD']
     const [selectedCountry, setCountry] = useState();
     // console.log(selectedCountry)
-    const [isAddress, setIsAddress] = useState(false);
+    const navigate = useNavigate()
     const dispatch = useDispatch()
     const { register, handleSubmit } = useForm()
     const [handleAddress, setHandleAddress] = useState();
     const [orderMethod, setOrderMethod] = useState();
-    const { addressList } = useSelector(state => state.addressSlice)
+    const { addressList, showForm } = useSelector(state => state.addressSlice)
+    let { cartItem } = useSelector(state => state.cart)
     cartItem.map((item) => {
-        subtotal += item.price
+        return subtotal += item.price
     })
-    console.log(orderMethod)
-    const order = async () => {
+    const order = async (data) => {
+        console.log('function call', data);
         let deliverAddress = addressList.filter(delivery => delivery.id === handleAddress)
-        console.log(deliverAddress)
-        console.log(orderMethod)
-        // console.log(cartItem)
-        await axios.post('http://localhost:8080/order', { products: cartItem, paymentMethos: orderMethod, deliverAddress: deliverAddress })
+        navigate('/checkout/order')
+        await axios.post('http://localhost:8080/order', { products: cartItem, paymentMethos: data.method, deliverAddress: deliverAddress })
     }
-    const onSubmit = async (data) => {
-        await axios.post('http://localhost:8080/address', data)
-        dispatch(getAddressList())
-        setIsAddress(!isAddress)
-    }
-    async function deleteProduct(id) {
-        await axios.delete(`${process.env.REACT_APP_API_BASEURL}/cartItem/${id}`)
+    function deleteCartItem(id) {
+        dispatch(deleteProduct(id))
         dispatch(getCartItem())
     }
-    // function handleAddress(id) {
-    console.log(handleAddress)
-    // }
     useEffect(() => {
         dispatch(getAddressList())
-    }, [dispatch]);
+    }, [showForm]);
     return (
         <>{!cartItem.length && <Navigate to='/' />}
             <div className="space-y-12 mx-auto max-w-7xl px-2 sm:px-6 lg:px-8">
@@ -77,166 +70,23 @@ export default function Checkout({ cartItem }) {
                     <div className='lg:col-span-3'>
                         <h2 className="text-base font-semibold leading-7 text-gray-900">Personal Information</h2>
                         <p className="mt-1 text-sm leading-6 text-gray-600">Use a permanent address where you can receive mail.</p>
-                        <button onClick={() => { setIsAddress(!isAddress) }}
+                        <button onClick={() => { dispatch(handleShowForm(!showForm)) }}
                             type="submit"
                             className="rounded-md bg-indigo-600 px-3 mt-5 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
                         >
                             Add Address
                         </button>
                         <div className="space-y-12">
-                            <div className="border-b border-gray-900/10 pb-12">
-                                {isAddress ?
-                                    <form onSubmit={handleSubmit(onSubmit)}>
-                                        <div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
-                                            <div className="sm:col-span-3">
-                                                <label htmlFor="first-name" className="block text-sm font-medium leading-6 text-gray-900">
-                                                    Name
-                                                </label>
-                                                <div className="mt-2">
-                                                    <input
-                                                        type="text"
-                                                        name="first-name"
-                                                        id="first-name"
-                                                        {...register('name')}
-                                                        placeholder='Enter your full name'
-                                                        autoComplete="given-name"
-                                                        className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                                                    />
-                                                </div>
-                                            </div>
-                                            <div className="sm:col-span-4">
-                                                <label htmlFor="email" className="block text-sm font-medium leading-6 text-gray-900">
-                                                    Email address
-                                                </label>
-                                                <div className="mt-2">
-                                                    <input
-                                                        id="email"
-                                                        name="email"
-                                                        {...register('email')}
-                                                        type="email"
-                                                        placeholder='Enter your email'
-                                                        autoComplete="email"
-                                                        className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                                                    />
-                                                </div>
-                                            </div><br />
-
-                                            <div className="sm:col-span-2">
-                                                <label htmlFor="country" className="block text-sm font-medium leading-6 text-gray-900">
-                                                    Country
-                                                </label>
-                                                <div className="mt-2">
-                                                    <select
-                                                        id="country"
-                                                        name="country"
-                                                        {...register('country')}
-                                                        onChange={(e) => { setCountry(e.target.value) }}
-                                                        autoComplete="country-name"
-                                                        className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6"
-                                                    >
-                                                        <option>INDIA</option>
-                                                        <option>UAE</option>
-                                                    </select>
-                                                </div>
-                                            </div>
-                                            <div className="sm:col-span-2">
-                                                <label htmlFor="country" className="block text-sm font-medium leading-6 text-gray-900">
-                                                    State / Province
-                                                </label>
-                                                <div className="mt-2">
-                                                    <select
-                                                        id="state"
-                                                        name="state"
-                                                        {...register('state')}
-                                                        onChange={(e) => { setCountry(e.target.value) }}
-                                                        autoComplete="country-name"
-                                                        className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6"
-                                                    >
-                                                        {/* {
-                                                        states.map(() => { })
-                                                    } */}
-                                                        <option>Gujarat</option>
-                                                        <option>Maharashtra</option>
-                                                    </select>
-                                                </div>
-                                            </div>
-                                            <div className="sm:col-span-2 sm:col-start-1">
-                                                <label htmlFor="city" className="block text-sm font-medium leading-6 text-gray-900">
-                                                    City
-                                                </label>
-                                                <div className="mt-2">
-                                                    <input
-                                                        type="text"
-                                                        name="city"
-                                                        {...register('city')}
-                                                        id="city"
-                                                        autoComplete="address-level2"
-                                                        className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                                                    />
-                                                </div>
-                                            </div>
-                                            <div className="sm:col-span-2">
-                                                <label htmlFor="postal-code" className="block text-sm font-medium leading-6 text-gray-900">
-                                                    ZIP / Postal code
-                                                </label>
-                                                <div className="mt-2">
-                                                    <input
-                                                        type="text"
-                                                        name="postal-code"
-                                                        {...register('zipcode')}
-                                                        id="postal-code"
-                                                        autoComplete="postal-code"
-                                                        className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                                                    />
-                                                </div>
-                                            </div>
-                                            <div className="col-span-full">
-                                                <label htmlFor="street-address" className="block text-sm font-medium leading-6 text-gray-900">
-                                                    Street address
-                                                </label>
-                                                <div className="mt-2">
-                                                    <input
-                                                        type="text"
-                                                        name="street-address"
-                                                        {...register('street')}
-                                                        id="street-address"
-                                                        autoComplete="street-address"
-                                                        className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                                                    />
-                                                </div>
-                                            </div>
-                                            <div className="sm:col-span-4">
-                                                <label htmlFor="email" className="block text-sm font-medium leading-6 text-gray-900">
-                                                    Phone No.
-                                                </label>
-                                                <div className="mt-2">
-                                                    <input
-                                                        id="Number"
-                                                        name="phone"
-                                                        {...register('phone')}
-                                                        type="number"
-                                                        placeholder='Enter your Number'
-                                                        className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                                                    />
-                                                </div>
-                                            </div><br />
-                                        </div>
-                                        <button
-                                            type="submit"
-                                            className="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-                                        > Add Address
-                                        </button>
-                                    </form> : ""}
-                            </div>
+                            {showForm ? <AddressForm /> : ""}
                             <div className="border-b border-gray-900/10 pb-12">
                                 <form onSubmit={handleSubmit(order)}>
                                     <div className="border-b border-gray-900/10 pb-12">
                                         <div className="mt-10 space-y-10">
-                                            <ul role="list" className="divide-y divide-gray-100">
+                                            <ul className="divide-y divide-gray-100">
                                                 {addressList.map((person) => (
                                                     <li key={person.id} className="flex justify-between gap-x-6 py-5">
                                                         <div className="flex gap-x-4 items-center">
-                                                            <input type='radio' name='add' onClick={() => { setHandleAddress(person.id) }} />
+                                                            <input type='radio' name='add' value={person} {...register('address', { required: true })} onClick={() => { setHandleAddress(person.id) }} />
                                                             <div className="min-w-0 flex-auto">
                                                                 <p className="text-sm font-semibold leading-6 text-gray-900">{person.name}</p>
                                                                 <p className="text-sm font-semibold leading-6 text-gray-500">{person.street}</p>
@@ -265,73 +115,54 @@ export default function Checkout({ cartItem }) {
                                                 <legend className="text-sm font-semibold leading-6 text-gray-900">Payment Method</legend>
                                                 <p className="mt-1 text-sm leading-6 text-gray-600">choose one</p>
                                                 <div className="mt-6 space-y-6">
-                                                    <div className="flex items-center gap-x-3">
-                                                        <input
-                                                            id="payment"
-                                                            name="payment"
-                                                            type="radio"
-                                                            onClick={() => { setOrderMethod('upi') }}
-                                                            className="h-4 w-4 border-gray-300 text-indigo-600 focus:ring-indigo-600"
-                                                        />
-                                                        <label htmlFor="push-everything" className="block text-sm font-medium leading-6 text-gray-900">
-                                                            UPI
-                                                        </label>
-                                                    </div>
-                                                    <div className="flex items-center gap-x-3">
-                                                        <input
-                                                            id="payment"
-                                                            name="payment"
-                                                            type="radio"
-                                                            onClick={() => { setOrderMethod('cod') }}
-                                                            className="h-4 w-4 border-gray-300 text-indigo-600 focus:ring-indigo-600"
-                                                        />
-                                                        <label htmlFor="push-email" className="block text-sm font-medium leading-6 text-gray-900">
-                                                            COD
-                                                        </label>
-                                                    </div>
-                                                    <div className="flex items-center gap-x-3">
-                                                        <input
-                                                            id="payment"
-                                                            name="payment"
-                                                            type="radio"
-                                                            onClick={() => { setOrderMethod('card') }}
-                                                            className="h-4 w-4 border-gray-300 text-indigo-600 focus:ring-indigo-600"
-                                                        />
-                                                        <label htmlFor="push-nothing" className="block text-sm font-medium leading-6 text-gray-900">
-                                                            CREDIT/DEBIT-CARD
-                                                        </label>
-                                                    </div>
+                                                    {paymentMethod.map((method, index) => {
+                                                        return (
+                                                            <div key={index} className="flex items-center gap-x-3">
+                                                                <input
+                                                                    id="payment"
+                                                                    name="payment"
+                                                                    type="radio"
+                                                                    value={method}
+                                                                    {...register('method', { required: true })}
+                                                                    onClick={() => { setOrderMethod(method) }}
+                                                                    className="h-4 w-4 border-gray-300 text-indigo-600 focus:ring-indigo-600"
+                                                                    required
+                                                                />
+                                                                <label htmlFor="push-everything" className="block text-sm font-medium leading-6 text-gray-900">
+                                                                    {method}
+                                                                </label>
+                                                            </div>
+                                                        )
+                                                    })}
+
                                                 </div>
                                             </fieldset>
                                             <div className="mt-6 flex items-center justify-end gap-x-6">
                                                 <button type="button" className="text-sm font-semibold leading-6 text-gray-900">
                                                     Cancel
                                                 </button>
-                                                <Link to='/checkout/order'>
-                                                    <button
-                                                        type="submit"
-                                                        className="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-                                                    >
-                                                        Order Place
-                                                    </button>
-                                                </Link>
+                                                <button
+                                                    type="submit"
+                                                    // onClick={() => { order() }}
+                                                    className="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                                                >
+                                                    Order Place
+                                                </button>
                                             </div>
                                         </div>
                                     </div>
                                 </form>
                             </div>
                         </div>
-
                     </div>
                     <div className='lg:col-span-2'>
                         <div className="flex h-full flex-col  bg-white shadow-xl">
                             <div className="flex-0s px-4 py-2 sm:px-6">
                                 <div className="mt-8">
                                     <div className="flow-root">
-                                        <ul role="list" className="-my-6 divide-y divide-gray-200">
+                                        <ul className="-my-6 divide-y divide-gray-200">
                                             {cartItem && cartItem.map((product) => (
                                                 <li key={product.id} className="flex py-6">
-
                                                     <div className="h-24 w-24 flex-shrink-0 overflow-hidden rounded-md border border-gray-200">
                                                         <img
                                                             src={product.thumbnail}
@@ -353,7 +184,7 @@ export default function Checkout({ cartItem }) {
                                                             <p className="text-gray-500">Qty : {product.qty}</p>
 
                                                             <div className="flex">
-                                                                <button onClick={() => { deleteProduct(product.id) }}
+                                                                <button onClick={() => { deleteCartItem(product.id) }}
                                                                     type="button"
                                                                     className="font-medium text-indigo-600 hover:text-indigo-500"
                                                                 >

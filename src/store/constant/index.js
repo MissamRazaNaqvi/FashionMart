@@ -7,7 +7,8 @@ const productApi = {
     getCategory: `${URL}/categories`,
     createUser: `${URL}/user`,
     cartItemPath: `${URL}/cartItem`,
-    address: `${URL}/address`
+    address: `${URL}/address`,
+    deleteCartItem: `${URL}/cartItem`
 };
 export const path = {
     root: "/",

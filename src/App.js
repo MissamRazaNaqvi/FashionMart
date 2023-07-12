@@ -13,13 +13,9 @@ import { useDispatch, useSelector } from 'react-redux';
 import { getCartItem } from './store/actions/cartItemActions';
 import PageNoteFound from './404 PageNotFound/PageNoteFound';
 import OrderSuccess from './components/order/orderSuccess';
+import Profile from './components/headers/Profile';
 
 function App() {
-  const dispatch = useDispatch()
-  let { cartItem } = useSelector(state => state.cart)
-  useEffect(() => {
-    dispatch(getCartItem())
-  }, [dispatch]);
   return (
     <BrowserRouter  >
       <Header />
@@ -28,16 +24,17 @@ function App() {
         <Route path='/login' element={<Login />} />
         <Route path='/productDetail/:id' element={<ProductDetail />} />
         <Route path='/signup' element={<Signup />} />
-        <Route path='/checkout/order' element={<OrderSuccess />}></Route>
+        <Route path='/checkout/order' element={<OrderSuccess />} />
+        <Route path='/profile' element={<Profile />} />
         <Route path='/cart' element={
           // <Protected>
           //   <Cart />
           // </Protected>
-          <Cart cartItem={cartItem} />
+          <Cart />
         } />
         <Route path='/checkout' element={
           <Protected>
-            <Checkout cartItem={cartItem} />
+            <Checkout />
           </Protected>
         } />
         <Route path='*' element={<PageNoteFound />} />

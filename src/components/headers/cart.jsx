@@ -1,18 +1,22 @@
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { Link, Navigate } from 'react-router-dom'
-import { getCartItem } from '../../store/actions/cartItemActions';
-import axios from 'axios';
+import { deleteProduct, getCartItem } from '../../store/actions/cartItemActions';
+import { useEffect } from 'react';
 
-export default function Cart({ cartItem }) {
-    let subtotal = 0
+export default function Cart() {
+    let { cartItem } = useSelector(state => state.cart)
     const dispatch = useDispatch()
+    let subtotal = 0
     cartItem.map((item) => {
         subtotal += item.price
     })
-    async function deleteProduct(id) {
-        await axios.delete(`${process.env.REACT_APP_API_BASEURL}/cartItem/${id}`)
+    function deleteCartItem(id) {
+        dispatch(deleteProduct(id))
         dispatch(getCartItem())
     }
+    useEffect(() => {
+        dispatch(getCartItem())
+    }, [dispatch]);
     return (
         <>
             {!cartItem.length && <Navigate to='/' />}
@@ -44,7 +48,7 @@ export default function Cart({ cartItem }) {
                                                 <div className="flex flex-1 items-end justify-between text-sm">
                                                     <p className="text-gray-500">Qty : {product.qty}</p>
                                                     <div className="flex">
-                                                        <button onClick={() => { deleteProduct(product.id) }}
+                                                        <button onClick={() => { deleteCartItem(product.id) }}
                                                             type="button"
                                                             className="font-medium text-indigo-600 hover:text-indigo-500">
                                                             Remove
