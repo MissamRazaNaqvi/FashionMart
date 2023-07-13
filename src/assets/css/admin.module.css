@@ -1,0 +1,73 @@
+.wrapper {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+
+.container {
+    max-width: 1296px;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+}
+
+.app {
+    display: flex;
+    justify-content: center;
+}
+
+.tableHeadId {
+    padding: 10px;
+    font-size: 22px;
+    border-bottom: 2px solid;
+}
+
+.prodImg {
+    width: 100px;
+}
+
+.editBtn {
+    padding: 7px 23px;
+    background: #00AB2F;
+    border: 0px;
+}
+
+.deleteBtn {
+    padding: 7px 23px;
+    background: #de2828;
+    border: 0px;
+}
+
+.addBtn {
+    padding: 10px 50px;
+    margin: 10px;
+    background: #06637a;
+    border: 0px;
+    color: white;
+    font-size: 15px;
+    /* font-weight: 700; */
+}
+
+.table {
+    width: 75%;
+}
+
+.adminform div {
+    padding: 10px;
+}
+
+.adminform div label {
+    margin-right: 15px;
+}
+
+.addProductStyle {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.table tr td {
+    text-align: center;
+}
