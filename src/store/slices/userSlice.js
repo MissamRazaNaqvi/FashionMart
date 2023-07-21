@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit"
-import { getUserData } from "../actions/productAction";
+import { getUserData } from "../actions/userActions"
 
 const initialState = {
     user: [],
@@ -12,6 +12,7 @@ const userSlice = createSlice({
     initialState,
     reducers: {
         handleLogin: (state, action) => {
+            console.log(action.payload)
             if (action.payload) {
                 state.isLogin = action.payload
             }
@@ -30,6 +31,7 @@ const userSlice = createSlice({
                 state.loading = false;
                 state.error = action.payload;
             })
+
     }
 })
 export default userSlice.reducer

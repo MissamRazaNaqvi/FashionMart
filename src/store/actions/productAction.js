@@ -1,5 +1,5 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import { createNewUser, fetProducts, fetchCategory, getUser } from "../api/productApi";
+import { fetProducts, fetchCategory } from "../api/productApi";
 
 export const getProducts = createAsyncThunk("product/getProduct",
     async () => {
@@ -9,12 +9,5 @@ export const getProducts = createAsyncThunk("product/getProduct",
 )
 export const getCategory = createAsyncThunk('category/getCategory', async () => {
     const { data } = await fetchCategory()
-    return data
-})
-export const createUser = createAsyncThunk('create/createUser', async (data) => {
-    await createNewUser(data)
-})
-export const getUserData = createAsyncThunk('user/getUser', async () => {
-    let { data } = await getUser()
     return data
 })

@@ -1,31 +1,30 @@
-import { useEffect } from "react";
+
 import { useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
-import { getUserData } from "../../store/actions/productAction";
+import { toast } from "react-hot-toast";
 import { handleLogin } from "../../store/slices/userSlice";
+import axios from "axios";
 
 export default function Login() {
     const { register, handleSubmit } = useForm()
-    const dispatch = useDispatch()
+    const dispatch=useDispatch()
     const navigate = useNavigate()
-    const { user } = useSelector(state => state.user)
-    const onSubmit = (data) => {
-        if (data) {
-            user.map((item) => {
-                if (item.email === data.email && item.password === data.password) {
-                    dispatch(handleLogin(true))
-                    return navigate('/cart')
-                }
-                // else {
-                //     // console.log('Invalid Credential')
-                // }
-            })
-        }
+    const { isLogin } = useSelector(state => state.user)
+    console.log(isLogin)
+    const onSubmit =async (loginData) => {
+        const {data} = await axios.post(`${process.env.REACT_APP_API_BASEURL}/login`, {loginData});
+        console.log(data)
+            if (data.statusText === 'OK') {
+                // localStorage.setItem("authtoken", response.data)
+                dispatch(handleLogin(true))
+                toast.success('success')
+                navigate("/");
+            } else {
+                dispatch(handleLogin(false))
+                toast.error('invalid credential')
+            }
     }
-    useEffect(() => {
-        dispatch(getUserData())
-    }, []);
     return (
         <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">
             <div className="sm:mx-auto sm:w-full sm:max-w-sm">

@@ -1,13 +1,14 @@
 import { useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
-import { createUser } from "../../store/actions/productAction";
 import { useDispatch } from "react-redux";
+import { createUser } from "../../store/actions/userActions";
 
 export default function Signup() {
     const dispatch = useDispatch()
     const navigate = useNavigate();
     const { register, handleSubmit, errors } = useForm()
     const onSubmit = (data) => {
+        console.log("data for registration :",data)
         dispatch(createUser(data))
         navigate('/login')
     }

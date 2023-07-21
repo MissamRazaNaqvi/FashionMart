@@ -5,13 +5,14 @@ import { useEffect } from 'react';
 
 export default function Cart() {
     let { cartItem } = useSelector(state => state.cart)
+    console.log(cartItem)
     const dispatch = useDispatch()
     let subtotal = 0
     cartItem.map((item) => {
-        subtotal += item.price
+        subtotal =subtotal+ item.price
     })
-    function deleteCartItem(id) {
-        dispatch(deleteProduct(id))
+    function deleteCartItem(_id) {
+        dispatch(deleteProduct(_id))
         dispatch(getCartItem())
     }
     useEffect(() => {
@@ -48,7 +49,7 @@ export default function Cart() {
                                                 <div className="flex flex-1 items-end justify-between text-sm">
                                                     <p className="text-gray-500">Qty : {product.qty}</p>
                                                     <div className="flex">
-                                                        <button onClick={() => { deleteCartItem(product.id) }}
+                                                        <button onClick={() => { deleteCartItem(product._id) }}
                                                             type="button"
                                                             className="font-medium text-indigo-600 hover:text-indigo-500">
                                                             Remove

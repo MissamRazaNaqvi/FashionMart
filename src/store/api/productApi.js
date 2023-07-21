@@ -7,9 +7,3 @@ export const fetProducts = () => {
 export const fetchCategory = () => {
     return axios.get(path.getCategory)
 }
-export const createNewUser = (data) => {
-    return axios.post(path.createUser, { email: data.email, password: data.password, confirmPassword: data.confirmPassword })
-}
-export const getUser = () => {
-    return axios.get(path.createUser)
-}

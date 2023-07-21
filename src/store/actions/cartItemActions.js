@@ -6,6 +6,6 @@ export const getCartItem = createAsyncThunk('getItem/getCartItem', async () => {
     const { data } = await fetchCartItem()
     return data
 })
-export const deleteProduct = createAsyncThunk('delete/deleteProductFromCart', async (id) => {
-    await deleteCartItem(id)
+export const deleteProduct = createAsyncThunk('delete/deleteProductFromCart', async (_id) => {
+    await deleteCartItem(_id)
 })

@@ -64,9 +64,8 @@ export default function ProductListPage() {
             const index = filter.findIndex(el => el === e.target.value)
             filter.splice(index, 1)
         }
-        console.log(filter)
+        // console.log(filter)
     }
-    // const filteredBrand = [...new Set(sorteditem && sorteditem.map((item) => { return item.brand }))];
     useEffect(() => {
         dispatch(getProducts())
         dispatch(getCategory())
@@ -120,7 +119,7 @@ export default function ProductListPage() {
                                                 {categories.map((brandName, index) => (
                                                     <li key={index}>
                                                         <label className="block px-2 py-3">
-                                                            {brandName}
+                                                            {brandName.category}
                                                         </label>
                                                     </li>
                                                 ))}
@@ -174,7 +173,6 @@ export default function ProductListPage() {
                             </div>
                         </Dialog>
                     </Transition.Root>
-
                     <main className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
                         <div className="flex items-baseline justify-between border-b border-gray-200 pb-6 pt-12">
                             <h1 className="text-4xl font-bold tracking-tight text-gray-900">All Products</h1>
@@ -243,8 +241,8 @@ export default function ProductListPage() {
                                         {categories.map((brandName, index) => (
                                             <li key={index}>
                                                 <label>
-                                                    <input type='checkbox' className='mx-2' value={brandName} onChange={(e) => { handleFilter(e) }} />
-                                                    {brandName}
+                                                    <input type='checkbox' className='mx-2' value={brandName.category} onChange={(e) => { handleFilter(e) }} />
+                                                    {brandName.category}
                                                 </label>
                                             </li>
                                         ))}
@@ -309,7 +307,7 @@ export default function ProductListPage() {
                                                     <div className="mt-4 flex justify-between">
                                                         <div>
                                                             <h3 className="text-sm text-gray-700">
-                                                                <Link to={`/productDetail/${product.id}`}>
+                                                                <Link to={`/productDetail/${product._id}`}>
                                                                     <span aria-hidden="true" className="absolute inset-0" />
                                                                     {product.title}
                                                                 </Link>

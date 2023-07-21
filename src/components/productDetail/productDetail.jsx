@@ -60,6 +60,7 @@ function classNames(...classes) {
 }
 
 export default function ProductDetail() {
+    let {id} =useParams()
     // const data = [
     //     {
     //         image: "https://upload.wikimedia.org/wikipedia/commons/thumb/0/0c/GoldenGateBridge-001.jpg/1200px-GoldenGateBridge-001.jpg",
@@ -107,7 +108,7 @@ export default function ProductDetail() {
     //     fontSize: '20px',
     //     fontWeight: 'bold',
     // }
-    const { id } = useParams()
+    
     const navigate = useNavigate()
     const [selectedColor, setSelectedColor] = useState(product.colors[0])
     const [selectedSize, setSelectedSize] = useState(product.sizes[2])
@@ -117,8 +118,8 @@ export default function ProductDetail() {
         setProduct(data)
     }
     async function addToCart() {
-        await axios.post(`${process.env.REACT_APP_API_BASEURL}/cartItem`, {
-            "id": detail.id,
+        await axios.post(`${process.env.REACT_APP_API_BASEURL}/cart`, {
+            "_id": detail._id,
             "price": detail.price,
             "rating": detail.rating,
             "title": detail.title,
@@ -128,7 +129,8 @@ export default function ProductDetail() {
             "brand": detail.brand,
             "category": detail.category,
             "thumbnail": detail.thumbnail,
-            "images": [detail.images]
+            "images": detail.images,
+
         })
     }
     // console.log(detail.images)

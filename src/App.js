@@ -13,11 +13,12 @@ import OrderSuccess from './components/order/orderSuccess';
 import Profile from './components/headers/Profile';
 import ForgotPassword from './components/headers/forgotPassword';
 import Admin from './admin/admin';
-import AddNewProduct from './admin/AddNewProduct';
+import { Toaster } from 'react-hot-toast';
 
 function App() {
   return (
     <BrowserRouter  >
+      <Toaster />
       <Header />
       <Routes>
         <Route path="/" element={<ProductListPage />} />
