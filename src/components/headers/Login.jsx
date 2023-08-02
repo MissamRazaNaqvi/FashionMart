@@ -1,29 +1,27 @@
-
 import { useForm } from "react-hook-form";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-hot-toast";
-import { handleLogin } from "../../store/slices/userSlice";
 import axios from "axios";
+import { handleLogin } from "../../store/slices/userSlice";
 
 export default function Login() {
     const { register, handleSubmit } = useForm()
-    const dispatch=useDispatch()
+    const dispatch = useDispatch()
     const navigate = useNavigate()
-    const { isLogin } = useSelector(state => state.user)
-    console.log(isLogin)
-    const onSubmit =async (loginData) => {
-        const {data} = await axios.post(`${process.env.REACT_APP_API_BASEURL}/login`, {loginData});
-        console.log(data)
-            if (data.statusText === 'OK') {
-                // localStorage.setItem("authtoken", response.data)
-                dispatch(handleLogin(true))
-                toast.success('success')
-                navigate("/");
-            } else {
-                dispatch(handleLogin(false))
-                toast.error('invalid credential')
-            }
+    const onSubmit = async (loginData) => {
+        const { data } = await axios.post(`${process.env.REACT_APP_API_BASEURL}/login`, { loginData }, { withCredentials: true });
+        // console.log(data)
+        if (data.statusText === 'OK') {
+            dispatch(handleLogin(true))
+            // dispatch({ type: handleLogin, payload: true })
+            toast.success('success')
+            navigate("/");
+        } else {
+            dispatch(handleLogin(false))
+            // dispatch({ type: handleLogin, payload: false })
+            toast.error('invalid credential')
+        }
     }
     return (
         <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">

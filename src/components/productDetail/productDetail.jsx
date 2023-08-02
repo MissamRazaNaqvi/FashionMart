@@ -1,32 +1,15 @@
 import { useEffect, useState } from 'react'
 import { StarIcon } from '@heroicons/react/20/solid'
 import { RadioGroup } from '@headlessui/react'
-import { useNavigate, useParams } from 'react-router'
+import { useParams } from 'react-router'
 
 import axios from 'axios'
+import { Link } from 'react-router-dom'
 
 const product = {
     name: 'Basic Tee 6-Pack',
     price: '$192',
     href: '#',
-    images: [
-        {
-            src: 'https://tailwindui.com/img/ecommerce-images/product-page-02-secondary-product-shot.jpg',
-            alt: 'Two each of gray, white, and black shirts laying flat.',
-        },
-        {
-            src: 'https://tailwindui.com/img/ecommerce-images/product-page-02-tertiary-product-shot-01.jpg',
-            alt: 'Model wearing plain black basic tee.',
-        },
-        {
-            src: 'https://tailwindui.com/img/ecommerce-images/product-page-02-tertiary-product-shot-02.jpg',
-            alt: 'Model wearing plain gray basic tee.',
-        },
-        {
-            src: 'https://tailwindui.com/img/ecommerce-images/product-page-02-featured-product-shot.jpg',
-            alt: 'Model wearing plain white basic tee.',
-        },
-    ],
     colors: [
         { name: 'White', class: 'bg-white', selectedClass: 'ring-gray-400' },
         { name: 'Gray', class: 'bg-gray-200', selectedClass: 'ring-gray-400' },
@@ -60,56 +43,7 @@ function classNames(...classes) {
 }
 
 export default function ProductDetail() {
-    let {id} =useParams()
-    // const data = [
-    //     {
-    //         image: "https://upload.wikimedia.org/wikipedia/commons/thumb/0/0c/GoldenGateBridge-001.jpg/1200px-GoldenGateBridge-001.jpg",
-    //         caption: "San Francisco"
-    //     },
-    //     {
-    //         image: "https://cdn.britannica.com/s:800x450,c:crop/35/204435-138-2F2B745A/Time-lapse-hyper-lapse-Isle-Skye-Scotland.jpg",
-    //         caption: "Scotland"
-    //     },
-    //     {
-    //         image: "https://static2.tripoto.com/media/filter/tst/img/735873/TripDocument/1537686560_1537686557954.jpg",
-    //         caption: "Darjeeling"
-    //     },
-    //     {
-    //         image: "https://upload.wikimedia.org/wikipedia/commons/thumb/1/16/Palace_of_Fine_Arts_%2816794p%29.jpg/1200px-Palace_of_Fine_Arts_%2816794p%29.jpg",
-    //         caption: "San Francisco"
-    //     },
-    //     {
-    //         image: "https://i.natgeofe.com/n/f7732389-a045-402c-bf39-cb4eda39e786/scotland_travel_4x3.jpg",
-    //         caption: "Scotland"
-    //     },
-    //     {
-    //         image: "https://www.tusktravel.com/blog/wp-content/uploads/2020/07/Best-Time-to-Visit-Darjeeling-for-Honeymoon.jpg",
-    //         caption: "Darjeeling"
-    //     },
-    //     {
-    //         image: "https://www.omm.com/~/media/images/site/locations/san_francisco_780x520px.ashx",
-    //         caption: "San Francisco"
-    //     },
-    //     {
-    //         image: "https://images.ctfassets.net/bth3mlrehms2/6Ypj2Qd3m3jQk6ygmpsNAM/61d2f8cb9f939beed918971b9bc59bcd/Scotland.jpg?w=750&h=422&fl=progressive&q=50&fm=jpg",
-    //         caption: "Scotland"
-    //     },
-    //     {
-    //         image: "https://www.oyorooms.com/travel-guide/wp-content/uploads/2019/02/summer-7.jpg",
-    //         caption: "Darjeeling"
-    //     }
-    // ];
-
-    // const captionStyle = {
-    //     fontSize: '2em',
-    //     fontWeight: 'bold',
-    // }
-    // const slideNumberStyle = {
-    //     fontSize: '20px',
-    //     fontWeight: 'bold',
-    // }
-    
-    const navigate = useNavigate()
+    let { id } = useParams()
     const [selectedColor, setSelectedColor] = useState(product.colors[0])
     const [selectedSize, setSelectedSize] = useState(product.sizes[2])
     const [detail, setProduct] = useState([]);
@@ -118,26 +52,10 @@ export default function ProductDetail() {
         setProduct(data)
     }
     async function addToCart() {
-        await axios.post(`${process.env.REACT_APP_API_BASEURL}/cart`, {
-            "_id": detail._id,
-            "price": detail.price,
-            "rating": detail.rating,
-            "title": detail.title,
-            "description": detail.description,
-            "discountPercentage": detail.discountPercentage,
-            "stock": detail.stock,
-            "brand": detail.brand,
-            "category": detail.category,
-            "thumbnail": detail.thumbnail,
-            "images": detail.images,
-
-        })
+        await axios.post(`${process.env.REACT_APP_API_BASEURL}/cart`, { "productId": detail._id })
     }
-    // console.log(detail.images)
     useEffect(() => {
-        if (id) {
-            getProductByid()
-        }
+        getProductByid()
     }, []);
     return (
         <div className="bg-white">
@@ -185,7 +103,7 @@ export default function ProductDetail() {
                     <div className="aspect-h-4 aspect-w-3 hidden overflow-hidden rounded-lg lg:block">
                         <img
                             src={detail.images && detail.images[0]}
-                            alt={product.title}
+                            alt=' not found'
                             className="h-full w-full object-cover object-center"
                         />
                     </div>
@@ -193,14 +111,14 @@ export default function ProductDetail() {
                         <div className="aspect-h-2 aspect-w-3 overflow-hidden rounded-lg">
                             <img
                                 src={detail.images && detail.images[1]}
-                                alt={product.images[1].alt}
+                                alt=' not found'
                                 className="h-full w-full object-cover object-center"
                             />
                         </div>
                         <div className="aspect-h-2 aspect-w-3 overflow-hidden rounded-lg">
                             <img
                                 src={detail.images && detail.images[2]}
-                                alt={product.images[2].alt}
+                                alt=' not found'
                                 className="h-full w-full object-cover object-center"
                             />
                         </div>
@@ -208,23 +126,20 @@ export default function ProductDetail() {
                     <div className="aspect-h-5 aspect-w-4 lg:aspect-h-4 lg:aspect-w-3 sm:overflow-hidden sm:rounded-lg">
                         <img
                             src={detail.images && detail.images[3]}
-                            alt={product.images[3].alt}
+                            alt=' not found'
                             className="h-full w-full object-cover object-center"
                         />
                     </div>
                 </div>
-
                 {/* Product info */}
                 <div className="mx-auto max-w-2xl px-4 pb-16 pt-10 sm:px-6 lg:grid lg:max-w-7xl lg:grid-cols-3 lg:grid-rows-[auto,auto,1fr] lg:gap-x-8 lg:px-8 lg:pb-24 lg:pt-16">
                     <div className="lg:col-span-2 lg:border-r lg:border-gray-200 lg:pr-8">
-                        <h1 className="text-2xl font-bold tracking-tight text-gray-900 sm:text-3xl">{product.name}</h1>
+                        <h1 className="text-2xl font-bold tracking-tight text-gray-900 sm:text-3xl">{detail.name}</h1>
                     </div>
-
                     {/* Options */}
                     <div className="mt-4 lg:row-span-3 lg:mt-0">
                         <h2 className="sr-only">Product information</h2>
-                        <p className="text-3xl tracking-tight text-gray-900">{product.price}</p>
-
+                        <p className="text-3xl tracking-tight text-gray-900">{detail.price}</p>
                         {/* Reviews */}
                         <div className="mt-6">
                             <h3 className="sr-only">Reviews</h3>
@@ -247,7 +162,6 @@ export default function ProductDetail() {
                                 </a>
                             </div>
                         </div>
-
                         <form className="mt-10">
                             {/* Colors */}
                             <div>
@@ -289,9 +203,9 @@ export default function ProductDetail() {
                             <div className="mt-10">
                                 <div className="flex items-center justify-between">
                                     <h3 className="text-sm font-medium text-gray-900">Size</h3>
-                                    <a href="#" className="text-sm font-medium text-indigo-600 hover:text-indigo-500">
+                                    <Link to="#" className="text-sm font-medium text-indigo-600 hover:text-indigo-500">
                                         Size guide
-                                    </a>
+                                    </Link>
                                 </div>
 
                                 <RadioGroup value={selectedSize} onChange={setSelectedSize} className="mt-4">
@@ -350,8 +264,7 @@ export default function ProductDetail() {
                             <button onClick={() => { addToCart() }}
                                 type="submit"
                                 className="mt-10 flex w-full items-center justify-center rounded-md border border-transparent bg-indigo-600 px-8 py-3 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-                            >
-                                Add to Cart
+                            > Add to Cart
                             </button>
                         </form>
                     </div>
@@ -370,7 +283,7 @@ export default function ProductDetail() {
                             <h3 className="text-sm font-medium text-gray-900">Highlights</h3>
 
                             <div className="mt-4">
-                                <ul role="list" className="list-disc space-y-2 pl-4 text-sm">
+                                <ul className="list-disc space-y-2 pl-4 text-sm">
                                     {product.highlights.map((highlight) => (
                                         <li key={highlight} className="text-gray-400">
                                             <span className="text-gray-600">{highlight}</span>

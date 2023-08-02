@@ -1,4 +1,4 @@
-import { Route, Routes } from 'react-router';
+import { Route, Routes, useNavigate } from 'react-router';
 import ProductListPage from './components/ProductListPage';
 import Header from './components/headers/Header';
 import { BrowserRouter } from 'react-router-dom';
@@ -14,8 +14,28 @@ import Profile from './components/headers/Profile';
 import ForgotPassword from './components/headers/forgotPassword';
 import Admin from './admin/admin';
 import { Toaster } from 'react-hot-toast';
+import axios from 'axios';
+import { handleLogin, handleUserId } from './store/slices/userSlice';
+import { useDispatch, useSelector } from 'react-redux';
+import { useEffect } from 'react';
+import { getVerify } from './store/actions/userActions';
+
+axios.defaults.withCredentials = true
 
 function App() {
+  const dispatch = useDispatch()
+  const navigate = useNavigate
+  const { isLogin } = useSelector(state => state.user)
+  function checkUser() {
+    if (isLogin) {
+      navigate('/')
+    } else {
+      dispatch(getVerify())
+    }
+  }
+  useEffect(() => {
+    checkUser()
+  }, [])
   return (
     <BrowserRouter  >
       <Toaster />

@@ -5,12 +5,7 @@ const useIsAdmin = () => {
   const navigate = useNavigate()
   async function checkAdmin() {
     try {
-      let { data } = await axios.post(`${process.env.REACT_APP_BASEURL}/admin/`,
-        {
-          "token": localStorage.getItem("authtoken")
-        }
-      );
-      console.log(data);
+      let { data } = await axios.post(`${process.env.REACT_APP_API_BASEURL}/admin`)
       if (data === true) {
         return true;
       } else {

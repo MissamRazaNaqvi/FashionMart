@@ -1,15 +1,18 @@
 import axios from "axios"
 import { useForm } from "react-hook-form"
-import { useDispatch, useSelector } from "react-redux"
-import { handleShowForm } from "../../store/slices/orderSlice"
+import { useDispatch } from "react-redux"
+import { handleShowForm } from "../../store/slices/addressSlice"
+import { addAddress, getAddressList } from "../../store/actions/addressActions"
 
 export default function AddressForm() {
     const { register, handleSubmit } = useForm()
-    const { showForm } = useSelector(state => state.addressSlice)
     const dispatch = useDispatch()
-    const onSubmit = async (data) => {
-        await axios.post('http://localhost:8080/address', data)
-        dispatch(handleShowForm(!showForm))
+    const onSubmit = async (newData) => {
+        dispatch(handleShowForm(false))
+        // console.log(newData)
+        // await axios.post(`${process.env.REACT_APP_API_BASEURL}/address`, newData)
+        dispatch(addAddress(newData))
+        dispatch(getAddressList())
     }
     return (
         <div className="border-b border-gray-900/10 pb-12">

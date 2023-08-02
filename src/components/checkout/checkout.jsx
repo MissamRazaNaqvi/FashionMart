@@ -5,8 +5,8 @@ import { Link, Navigate, useNavigate } from 'react-router-dom'
 import { deleteProduct, getCartItem } from '../../store/actions/cartItemActions'
 import { useForm } from 'react-hook-form'
 import AddressForm from './AddressForm'
-import { handleShowForm } from '../../store/slices/orderSlice'
-import { getAddressList } from '../../store/actions/orderActions'
+import { getAddressList } from '../../store/actions/addressActions'
+import { handleShowForm } from '../../store/slices/addressSlice'
 
 // const adddress = [
 //     {
@@ -39,26 +39,29 @@ export default function Checkout() {
     // ]
     let paymentMethod = ['UPI', 'COD', 'CREDIT/DEBIT CARD']
     const [selectedCountry, setCountry] = useState();
-    // console.log(selectedCountry)
     const navigate = useNavigate()
     const dispatch = useDispatch()
     const { register, handleSubmit } = useForm()
     const [handleAddress, setHandleAddress] = useState();
     const [orderMethod, setOrderMethod] = useState();
+    const { userId } = useSelector(state => state.user)
     const { addressList, showForm } = useSelector(state => state.addressSlice)
     let { cartItem } = useSelector(state => state.cart)
     cartItem.map((item) => {
         return subtotal += item.price
     })
     const order = async (data) => {
-        console.log('function call', data);
         let deliverAddress = addressList.filter(delivery => delivery.id === handleAddress)
         navigate('/checkout/order')
-        await axios.post('http://localhost:8080/order', { products: cartItem, paymentMethos: data.method, deliverAddress: deliverAddress })
+        await axios.post(`${process.env.REACT_APP_API_BASEURL}/order`, { products: cartItem, paymentMethos: data.method, deliverAddress: deliverAddress._id })
     }
     function deleteCartItem(id) {
         dispatch(deleteProduct(id))
         dispatch(getCartItem())
+    }
+    function DeleteAddress(id) {
+        axios.post(`${process.env.REACT_APP_API_BASEURL}/deladdress`, { id })
+        dispatch(getAddressList())
     }
     useEffect(() => {
         dispatch(getAddressList())
@@ -73,21 +76,19 @@ export default function Checkout() {
                         <button onClick={() => { dispatch(handleShowForm(!showForm)) }}
                             type="submit"
                             className="rounded-md bg-indigo-600 px-3 mt-5 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-                        >
-                            Add Address
-                        </button>
+                        >Add Address</button>
                         <div className="space-y-12">
-                            {showForm ? <AddressForm /> : ""}
+                            {showForm ? <AddressForm userId={userId} /> : ""}
                             <div className="border-b border-gray-900/10 pb-12">
                                 <form onSubmit={handleSubmit(order)}>
                                     <div className="border-b border-gray-900/10 pb-12">
                                         <div className="mt-10 space-y-10">
                                             <ul className="divide-y divide-gray-100">
-                                                {addressList.map((person) => (
-                                                    <li key={person.id} className="flex justify-between gap-x-6 py-5">
+                                                {addressList && addressList.map((person) => (
+                                                    <li key={person._id} className="flex justify-between gap-x-6 py-5">
                                                         <div className="flex gap-x-4 items-center">
-                                                            <input type='radio' name='add' value={person} {...register('address', { required: true })} onClick={() => { setHandleAddress(person.id) }} />
-                                                            <div className="min-w-0 flex-auto">
+                                                            <input type='radio' name='add' onChange={() => { setHandleAddress(person._id) }} value={person} {...register('address', { required: true })} />
+                                                            <div className="min-w-0 flex-auto" >
                                                                 <p className="text-sm font-semibold leading-6 text-gray-900">{person.name}</p>
                                                                 <p className="text-sm font-semibold leading-6 text-gray-500">{person.street}</p>
                                                                 <p className="mt-1 truncate text-xs leading-5 text-gray-500">{person.email}</p>
@@ -107,6 +108,7 @@ export default function Checkout() {
                                                                     <p className="text-xs leading-5 text-gray-500">{person.state}</p>
                                                                 </div>
                                                             )}
+                                                            <button onClick={() => { DeleteAddress(person._id) }}>remove</button>
                                                         </div>
                                                     </li>
                                                 ))}
@@ -221,8 +223,7 @@ export default function Checkout() {
                                                 type="button"
                                                 className="font-medium text-indigo-600 hover:text-indigo-500"
 
-                                            >
-                                                Continue Shopping
+                                            >Continue Shopping
                                                 <span aria-hidden="true"> &rarr;</span>
                                             </button>
                                         </Link>

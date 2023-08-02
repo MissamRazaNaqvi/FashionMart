@@ -1,9 +1,10 @@
 import { createSlice } from "@reduxjs/toolkit"
-import { getUserData } from "../actions/userActions"
+import { getUserData, getVerify } from "../actions/userActions"
 
 const initialState = {
     user: [],
     isLogin: false,
+    userId: {},
     loading: false,
     error: null
 }
@@ -12,15 +13,12 @@ const userSlice = createSlice({
     initialState,
     reducers: {
         handleLogin: (state, action) => {
-            console.log(action.payload)
-            if (action.payload) {
-                state.isLogin = action.payload
-            }
+            state.isLogin = action.payload
         }
     },
     extraReducers: (builder) => {
         builder
-            .addCase(getUserData.pending, (state, action) => {
+            .addCase(getUserData.pending, (state) => {
                 state.loading = true;
             })
             .addCase(getUserData.fulfilled, (state, action) => {
@@ -31,8 +29,20 @@ const userSlice = createSlice({
                 state.loading = false;
                 state.error = action.payload;
             })
+            .addCase(getVerify.pending, (state, action) => {
+                state.loading = true;
+            })
+            .addCase(getVerify.fulfilled, (state, action) => {
+                state.loading = false;
+                state.isLogin = action.payload;
+            })
+            .addCase(getVerify.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.payload;
+            })
+
 
     }
 })
 export default userSlice.reducer
-export const { handleLogin } = userSlice.actions
+export const { handleLogin, handleUserId } = userSlice.actions

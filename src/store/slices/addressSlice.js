@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit"
-import { addAddress, getAddressList } from "../actions/orderActions"
+import { addAddress, getAddressList } from "../actions/addressActions"
 
 const initialState = {
     address: [],
@@ -8,11 +8,12 @@ const initialState = {
     error: null,
     loading: false
 }
-const orderSlice = createSlice({
+const addressSlice = createSlice({
     name: 'order',
     initialState,
     reducers: {
         handleShowForm: (state, action) => {
+            console.log(action.payload)
             state.showForm = action.payload
         }
     },
@@ -42,5 +43,5 @@ const orderSlice = createSlice({
             })
     }
 })
-export default orderSlice.reducer
-export const { handleShowForm } = orderSlice.actions
+export default addressSlice.reducer
+export const { handleShowForm } = addressSlice.actions

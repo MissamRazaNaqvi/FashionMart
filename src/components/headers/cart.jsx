@@ -5,11 +5,10 @@ import { useEffect } from 'react';
 
 export default function Cart() {
     let { cartItem } = useSelector(state => state.cart)
-    console.log(cartItem)
     const dispatch = useDispatch()
     let subtotal = 0
     cartItem.map((item) => {
-        subtotal =subtotal+ item.price
+        subtotal = subtotal + item.price
     })
     function deleteCartItem(_id) {
         dispatch(deleteProduct(_id))

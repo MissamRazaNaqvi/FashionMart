@@ -11,3 +11,6 @@ export const createNewUser = (data) => {
 export const getUser = () => {
     return axios.get(path.createUser)
 }
+export const fetchVerify = () => {
+    return axios.get(path.verify)
+}

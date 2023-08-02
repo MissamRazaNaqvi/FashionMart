@@ -8,7 +8,7 @@ export default function Signup() {
     const navigate = useNavigate();
     const { register, handleSubmit, errors } = useForm()
     const onSubmit = (data) => {
-        console.log("data for registration :",data)
+        // console.log("data for registration :",data)
         dispatch(createUser(data))
         navigate('/login')
     }
